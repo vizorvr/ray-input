@@ -187,6 +187,10 @@ export default class RayRenderer extends EventEmitter {
     return this.raycaster.ray.direction;
   }
 
+  setCamera(camera) {
+    this.camera = camera;
+  }
+
   /**
    * Sets the pointer on the screen for camera + pointer based picking. This
    * superscedes origin and direction.

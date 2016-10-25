@@ -47,6 +47,10 @@ export default class RayInput extends EventEmitter {
     this.handlers = {};
   }
 
+  setCamera(camera) {
+    this.renderer.setCamera(camera);
+  }
+
   add(object, handlers) {
     this.renderer.add(object, handlers);
     this.handlers[object.id] = handlers;
