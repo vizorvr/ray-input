@@ -37,8 +37,16 @@ export default class RayInput extends EventEmitter {
     this.controller.on('release', this.onRelease_.bind(this));
     this.controller.on('cancel', this.onCancel_.bind(this));
     this.controller.on('pointermove', this.onPointerMove_.bind(this));
-    this.renderer.on('select', (mesh) => { this.emit('select', mesh) });
-    this.renderer.on('deselect', (mesh) => { this.emit('deselect', mesh) });
+    
+    this.renderer.on('select', (mesh) => {
+      if (mesh)
+        this.emit('select', mesh);
+    });
+
+    this.renderer.on('deselect', (mesh) => {
+      if (mesh)
+        this.emit('deselect', mesh);
+    });
 
     // By default, put the pointer offscreen.
     this.pointerNdc = new THREE.Vector2(1, 1);
@@ -197,7 +205,9 @@ export default class RayInput extends EventEmitter {
     this.fireActiveMeshEvent_('onAction');
 
     let mesh = this.renderer.getSelectedMesh();
-    this.emit('action', mesh);
+
+    if (mesh)
+      this.emit('action', mesh);
 
     this.renderer.setActive(true);
   }
@@ -207,7 +217,9 @@ export default class RayInput extends EventEmitter {
     this.fireActiveMeshEvent_('onRelease');
 
     let mesh = this.renderer.getSelectedMesh();
-    this.emit('release', mesh);
+
+    if (mesh)
+      this.emit('release', mesh);
 
     this.renderer.setActive(false);
   }
@@ -215,7 +227,9 @@ export default class RayInput extends EventEmitter {
   onCancel_(e) {
     console.log('onCancel_');
     let mesh = this.renderer.getSelectedMesh();
-    this.emit('cancel', mesh);
+
+    if (mesh)
+      this.emit('cancel', mesh);
   }
 
   fireActiveMeshEvent_(eventName) {
