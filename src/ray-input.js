@@ -23,12 +23,11 @@ import InteractionModes from './ray-interaction-modes'
  * API wrapper for the input library.
  */
 export default class RayInput extends EventEmitter {
-  constructor(camera) {
+  constructor(camera, element) {
     super();
 
-    this.camera = camera;
-    this.renderer = new RayRenderer(camera);
-    this.controller = new RayController();
+    this.element = element || window;
+    this.controller = new RayController(element);
 
     // Arm model needed to transform controller orientation into proper pose.
     this.armModel = new OrientationArmModel();
@@ -38,6 +37,19 @@ export default class RayInput extends EventEmitter {
     this.controller.on('cancel', this.onCancel_.bind(this));
     this.controller.on('pointermove', this.onPointerMove_.bind(this));
     
+    // By default, put the pointer offscreen.
+    this.pointerNdc = new THREE.Vector2(1, 1);
+
+    // Event handlers.
+    this.handlers = {};
+
+    if (camera)
+      this.setCamera(camera);
+  }
+
+  setCamera(camera) {
+    this.camera = camera;
+    this.renderer = new RayRenderer(camera);
     this.renderer.on('select', (mesh) => {
       if (mesh)
         this.emit('select', mesh);
@@ -47,12 +59,6 @@ export default class RayInput extends EventEmitter {
       if (mesh)
         this.emit('deselect', mesh);
     });
-
-    // By default, put the pointer offscreen.
-    this.pointerNdc = new THREE.Vector2(1, 1);
-
-    // Event handlers.
-    this.handlers = {};
   }
 
   add(object, handlers) {
