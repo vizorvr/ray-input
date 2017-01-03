@@ -45,6 +45,8 @@ export default class RayController extends EventEmitter {
     el.addEventListener('touchmove', this.onTouchMove_.bind(this));
     el.addEventListener('touchend', this.onTouchEnd_.bind(this));
 
+    this.element = el;
+
     // The position of the pointer.
     this.pointer = new THREE.Vector2();
     // The previous position of the pointer.
@@ -122,6 +124,10 @@ export default class RayController extends EventEmitter {
 
   setSize(size) {
     this.size = size;
+    this.boundingRect = { left: 0, top: 0 };
+    if (typeof(this.element.getBoundingClientRect) === 'function') {
+      this.boundingRect = this.element.getBoundingClientRect();
+    }
   }
 
   update() {
@@ -211,9 +217,13 @@ export default class RayController extends EventEmitter {
 
   updatePointer_(e) {
     // How much the pointer moved.
-    this.pointer.set(e.clientX, e.clientY);
-    this.pointerNdc.x = (e.clientX / this.size.width) * 2 - 1;
-    this.pointerNdc.y = - (e.clientY / this.size.height) * 2 + 1;
+    var x = e.clientX - this.boundingRect.left;
+    var y = e.clientY - this.boundingRect.top;
+    var nx = x / this.size.width;
+    var ny = y / this.size.height;
+    this.pointer.set(x, y);
+    this.pointerNdc.x = (nx * 2) - 1;
+    this.pointerNdc.y = -(ny * 2) + 1;
   }
 
   updateDragDistance_() {
