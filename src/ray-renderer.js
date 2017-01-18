@@ -144,13 +144,13 @@ export default class RayRenderer extends EventEmitter {
 
   /**
    * Sets the direction of the ray.
-   * @param {Vector} vector Unit vector corresponding to direction.
+   * @param {Vector} quaternion Unit vector corresponding to direction.
    */
   setOrientation(quaternion) {
     this.orientation.copy(quaternion);
 
     var pointAt = new THREE.Vector3(0, 0, -1).applyQuaternion(quaternion);
-    this.raycaster.ray.direction.copy(pointAt)
+    this.raycaster.ray.direction.copy(pointAt);
     this.updateRaycaster_();
   }
 
