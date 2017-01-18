@@ -78,6 +78,10 @@ export default class RayController extends EventEmitter {
     var gamepad = this.getVRGamepad_();
 
     if (gamepad) {
+      if (gamepad.id.includes('Gear VR')) {
+        return InteractionModes.VR_0DOF;
+      }
+
       let pose = gamepad.pose;
       // If there's a gamepad connected, determine if it's Daydream or a Vive.
       if (pose.hasPosition) {
@@ -87,7 +91,6 @@ export default class RayController extends EventEmitter {
       if (pose.hasOrientation) {
         return InteractionModes.VR_3DOF;
       }
-
     } else {
       // If there's no gamepad, it might be Cardboard, magic window or desktop.
       if (isMobile()) {
@@ -125,19 +128,19 @@ export default class RayController extends EventEmitter {
   }
 
   update() {
-    let mode = this.getInteractionMode();
-    if (mode == InteractionModes.VR_3DOF || mode == InteractionModes.VR_6DOF) {
-      // If we're dealing with a gamepad, check every animation frame for a
-      // pressed action.
-      let isGamepadPressed = this.getGamepadButtonPressed_();
-      if (isGamepadPressed && !this.wasGamepadPressed) {
-        this.emit('raydown');
-      }
-      if (!isGamepadPressed && this.wasGamepadPressed) {
-        this.emit('rayup');
-      }
-      this.wasGamepadPressed = isGamepadPressed;
+    if (!this.gamepad)
+      return;
+
+    // If we're dealing with a gamepad, check every animation frame for a
+    // pressed action.
+    let isGamepadPressed = this.getGamepadButtonPressed_();
+    if (isGamepadPressed && !this.wasGamepadPressed) {
+      this.emit('raydown');
     }
+    if (!isGamepadPressed && this.wasGamepadPressed) {
+      this.emit('rayup');
+    }
+    this.wasGamepadPressed = isGamepadPressed;
   }
 
   getGamepadButtonPressed_() {
@@ -256,10 +259,10 @@ export default class RayController extends EventEmitter {
     var gamepads = navigator.getGamepads();
     for (var i = 0; i < gamepads.length; ++i) {
       var gamepad = gamepads[i];
-
       // The array may contain undefined gamepads, so check for that as well as
-      // a non-null pose.
-      if (gamepad && gamepad.pose) {
+      // a non-null pose. Allow the Gear VR touch pad through.
+      if (gamepad && (gamepad.pose || gamepad.id.includes('Gear VR'))) {
+        this.gamepad = gamepad;
         return gamepad;
       }
     }
