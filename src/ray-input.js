@@ -57,7 +57,7 @@ export default class RayInput extends EventEmitter {
     delete this.handlers[object.id]
   }
 
-  update() {
+  update(meshes) {
     let lookAt = new THREE.Vector3(0, 0, -1);
     lookAt.applyQuaternion(this.camera.quaternion);
 
@@ -166,7 +166,7 @@ export default class RayInput extends EventEmitter {
       default:
         console.error('Unknown interaction mode.');
     }
-    this.renderer.update();
+    this.renderer.update(meshes);
     this.controller.update();
   }
 

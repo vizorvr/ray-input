@@ -94,15 +94,28 @@ export default class RayRenderer extends EventEmitter {
     }
   }
 
-  update() {
+  update(meshes) {
     // Do the raycasting and issue various events as needed.
+    let intersects = this.raycaster.intersectObjects(meshes, true);
+    let intersectedMesh;
+
+    for (var i=0; i < intersects.length; i++) {
+      let obj = intersects[i].object;
+
+      // traverse the hierarchy backwards, to find a clickable mesh via a child
+      while (obj && !this.meshes[obj.id]) {
+        obj = obj.parent;
+      }
+
+      if (obj) {
+        intersectedMesh = obj.id;
+        break;
+      }
+    }
+
     for (let id in this.meshes) {
       let mesh = this.meshes[id];
-      let intersects = this.raycaster.intersectObject(mesh, true);
-      if (intersects.length > 1) {
-        console.warn('Unexpected: multiple meshes intersected.');
-      }
-      let isIntersected = (intersects.length > 0);
+      let isIntersected = (intersectedMesh === id);
       let isSelected = this.selected[id];
 
       // If it's newly selected, send rayover.
