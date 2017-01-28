@@ -257,6 +257,11 @@ export default class RayController extends EventEmitter {
     for (var i = 0; i < gamepads.length; ++i) {
       var gamepad = gamepads[i];
 
+      // The left hand of the Oculus Touch appears first in the list,
+      // skip it and force right-handedness. :(
+      if (gamepad && gamepad.id === 'Oculus Touch (Left)')
+        continue;
+
       // The array may contain undefined gamepads, so check for that as well as
       // a non-null pose.
       if (gamepad && gamepad.pose) {
