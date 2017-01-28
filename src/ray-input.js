@@ -58,9 +58,6 @@ export default class RayInput extends EventEmitter {
   }
 
   update() {
-    let lookAt = new THREE.Vector3(0, 0, -1);
-    lookAt.applyQuaternion(this.camera.quaternion);
-
     let mode = this.controller.getInteractionMode();
     switch (mode) {
       case InteractionModes.MOUSE:
@@ -149,8 +146,14 @@ export default class RayInput extends EventEmitter {
           console.warn('Invalid gamepad pose. Can\'t update ray.');
           break;
         }
-        let orientation = new THREE.Quaternion().fromArray(pose.orientation);
+
+        // Adjust the position of the controller to
+        // the position and orientation of the camera.
         let position = new THREE.Vector3().fromArray(pose.position);
+        position.applyMatrix4(this.camera.matrixWorld);
+        let orientation = new THREE.Quaternion().multiplyQuaternions(
+            this.camera.quaternion,
+            new THREE.Quaternion().fromArray(pose.orientation));
 
         this.renderer.setOrientation(orientation);
         this.renderer.setPosition(position);
@@ -195,8 +198,6 @@ export default class RayInput extends EventEmitter {
   onRayDown_(e) {
     //console.log('onRayDown_');
 
-    // Force the renderer to raycast.
-    this.renderer.update();
     let mesh = this.renderer.getSelectedMesh();
     this.emit('raydown', mesh);
 
