@@ -57,7 +57,7 @@ export default class RayInput extends EventEmitter {
     delete this.handlers[object.id]
   }
 
-  update() {
+  update(meshes) {
     let mode = this.controller.getInteractionMode();
     switch (mode) {
       case InteractionModes.MOUSE:
@@ -169,7 +169,7 @@ export default class RayInput extends EventEmitter {
       default:
         console.error('Unknown interaction mode.');
     }
-    this.renderer.update();
+    this.renderer.update(meshes);
     this.controller.update();
   }
 
