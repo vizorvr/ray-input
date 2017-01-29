@@ -198,6 +198,8 @@ export default class RayInput extends EventEmitter {
   onRayDown_(e) {
     //console.log('onRayDown_');
 
+    // Force the renderer to raycast.
+    this.renderer.update();
     let mesh = this.renderer.getSelectedMesh();
     this.emit('raydown', mesh);
 
