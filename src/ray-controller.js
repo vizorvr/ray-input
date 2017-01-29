@@ -166,7 +166,7 @@ export default class RayController extends EventEmitter {
 
   onMouseDown_(e) {
     this.startDragging_(e);
-    this.emit('raydown');
+    this.emit('raydown', e);
   }
 
   onMouseMove_(e) {
@@ -176,7 +176,7 @@ export default class RayController extends EventEmitter {
   }
 
   onMouseUp_(e) {
-    this.endDragging_();
+    this.endDragging_(e);
   }
 
   onTouchStart_(e) {
@@ -186,10 +186,7 @@ export default class RayController extends EventEmitter {
     this.updateTouchPointer_(e);
 
     this.emit('pointermove', this.pointerNdc);
-    this.emit('raydown');
-
-    // Prevent synthetic mouse event from being created.
-    e.preventDefault();
+    this.emit('raydown', e);
   }
 
   onTouchMove_(e) {
@@ -201,10 +198,8 @@ export default class RayController extends EventEmitter {
   }
 
   onTouchEnd_(e) {
-    this.endDragging_();
+    this.endDragging_(e);
 
-    // Prevent synthetic mouse event from being created.
-    e.preventDefault();
     this.isTouchActive = false;
   }
 
@@ -235,8 +230,6 @@ export default class RayController extends EventEmitter {
       this.dragDistance += distance;
       this.lastPointer.copy(this.pointer);
 
-
-      //console.log('dragDistance', this.dragDistance);
       if (this.dragDistance > DRAG_DISTANCE_PX) {
         this.emit('raycancel');
         this.isDragging = false;
@@ -246,12 +239,13 @@ export default class RayController extends EventEmitter {
 
   startDragging_(e) {
     this.isDragging = true;
+    this.dragDistance = 0;
     this.lastPointer.set(e.clientX, e.clientY);
   }
 
-  endDragging_() {
+  endDragging_(e) {
     if (this.dragDistance < DRAG_DISTANCE_PX) {
-      this.emit('rayup');
+      this.emit('rayup', e);
     }
     this.dragDistance = 0;
     this.isDragging = false;

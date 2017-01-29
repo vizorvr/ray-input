@@ -199,15 +199,22 @@ export default class RayInput extends EventEmitter {
     //console.log('onRayDown_');
 
     let mesh = this.renderer.getSelectedMesh();
+
+    this.rayDownMesh = mesh;
     this.emit('raydown', mesh);
 
     this.renderer.setActive(true);
   }
 
   onRayUp_(e) {
-    //console.log('onRayUp_');
-    let mesh = this.renderer.getSelectedMesh();
-    this.emit('rayup', mesh);
+    // console.log('onRayUp_', e && this.rayDownMesh);
+
+    if (e && this.rayDownMesh) {
+        e.preventDefault();
+    }
+
+    this.emit('rayup', this.rayDownMesh);
+    this.rayDownMesh = null;
 
     this.renderer.setActive(false);
   }
