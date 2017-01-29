@@ -58,14 +58,8 @@ export default class RayInput extends EventEmitter {
   }
 
   update(meshes) {
-<<<<<<< HEAD
-=======
-    let lookAt = new THREE.Vector3(0, 0, -1);
-    lookAt.applyQuaternion(this.camera.quaternion);
-
     this.currentMeshes = meshes;
 
->>>>>>> origin/custom-meshes
     let mode = this.controller.getInteractionMode();
     switch (mode) {
       case InteractionModes.MOUSE:
