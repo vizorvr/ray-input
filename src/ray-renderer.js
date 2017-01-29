@@ -115,7 +115,7 @@ export default class RayRenderer extends EventEmitter {
 
     for (let id in this.meshes) {
       let mesh = this.meshes[id];
-      let isIntersected = (intersectedMesh === id);
+      let isIntersected = (intersectedMesh === mesh.id);
       let isSelected = this.selected[id];
 
       // If it's newly selected, send rayover.
