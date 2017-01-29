@@ -61,6 +61,8 @@ export default class RayInput extends EventEmitter {
     let lookAt = new THREE.Vector3(0, 0, -1);
     lookAt.applyQuaternion(this.camera.quaternion);
 
+    this.currentMeshes = meshes;
+
     let mode = this.controller.getInteractionMode();
     switch (mode) {
       case InteractionModes.MOUSE:
@@ -196,7 +198,7 @@ export default class RayInput extends EventEmitter {
     //console.log('onRayDown_');
 
     // Force the renderer to raycast.
-    this.renderer.update();
+    this.renderer.update(this.currentMeshes);
     let mesh = this.renderer.getSelectedMesh();
     this.emit('raydown', mesh);
 
