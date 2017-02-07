@@ -207,6 +207,7 @@ export default class RayInput extends EventEmitter {
     setTimeout(() => {
       this.update(this.currentMeshes);
       let mesh = this.renderer.getSelectedMesh();
+      this.rayDownMesh = mesh;
       this.emit('raydown', mesh);
 
       this.renderer.setActive(true);
