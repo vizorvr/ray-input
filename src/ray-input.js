@@ -202,10 +202,10 @@ export default class RayInput extends EventEmitter {
 
     // Force the renderer to raycast.
     // Do this in the next tick to avoid an infinite loop.
-    // A better way of doing this would be to handle 
+    // A better way of doing this would be to handle
     // the raydown state in the update loop.
     setTimeout(() => {
-      this.update();
+      this.update(this.currentMeshes);
       let mesh = this.renderer.getSelectedMesh();
       this.emit('raydown', mesh);
 
